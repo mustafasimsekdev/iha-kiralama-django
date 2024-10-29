@@ -15,8 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from config.views import SystemView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("", include("auth.urls")),
 ]
+
+handler404 = SystemView.as_view(template_name="pages_misc_error.html", status=404)
+handler403 = SystemView.as_view(template_name="pages_misc_not_authorized.html", status=403)
+handler400 = SystemView.as_view(template_name="pages_misc_error.html", status=400)
+handler500 = SystemView.as_view(template_name="pages_misc_error.html", status=500)
