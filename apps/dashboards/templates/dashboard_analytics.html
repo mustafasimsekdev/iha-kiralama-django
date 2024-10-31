@@ -1,0 +1,82 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Ana Sayfa{% endblock %}
+
+{% block vendor_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/libs/apex-charts/apex-charts.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/swiper/swiper.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}"/>
+{% endblock vendor_css %}
+
+{% block vendor_js %}
+    {{ block.super }}
+    <script src="{% static 'vendor/libs/apex-charts/apexcharts.js' %}"></script>
+    <script src="{% static 'vendor/libs/swiper/swiper.js' %}"></script>
+    <script src="{% static 'vendor/libs/datatables-bs5/datatables-bootstrap5.js' %}"></script>
+{% endblock vendor_js %}
+
+{% block page_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/css/pages/cards-advance.css' %}"/>
+    <style>
+        .video-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 80px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .overlay-icon {
+            width: 200px; /* İkonun boyutunu ayarlayın */
+            height: 150px;
+            margin-right: 5px; /* Metin ile resim arasındaki boşluk */
+        }
+
+
+    </style>
+{% endblock page_css %}
+
+{% block page_js %}
+    {{ block.super }}
+    <script src="{% static 'js/dashboards-analytics.js' %}"></script>
+{% endblock page_js %}
+
+{% block content %}
+    <div class="row">
+        <!-- Video Player -->
+        <div class="col-12 mb-6">
+            <div class="card video-container" id="mainScroll">
+                <video class="w-100" playsinline="" style="width: 100%;" data-keepplaying="" autoplay="" loop=""
+                       muted=""
+                       src="https://cdnik.baykartech.com/media/main_page/videos/section_1/koklerden-goklere.mp4"
+                       id="plyr-video-player"
+                       type="video/mp4"></video>
+                <div class="overlay-text">
+                    <img src="{% static 'img/illustrations/iha-home-page.png' %}" alt="Icon" class="overlay-icon">
+                    İHA Kiralama
+                </div>
+
+            </div>
+        </div>
+        <!-- /Video Player -->
+
+    </div>
+{% endblock %}

@@ -47,7 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "auth.apps.AuthConfig"
+    'apps.personals',
+    'authentication',
+    'apps.dashboards',
+    'apps.pages'
+
 ]
 
 MIDDLEWARE = [
@@ -122,6 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -168,3 +173,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 THEME_LAYOUT_DIR = THEME_LAYOUT_DIR
 TEMPLATE_CONFIG = TEMPLATE_CONFIG
 THEME_VARIABLES = THEME_VARIABLES
+
+
+# Login
+# ------------------------------------------------------------------------------
+LOGIN_URL = "/login/"
+LOGOUT_REDIRECT_URL = "/login/"

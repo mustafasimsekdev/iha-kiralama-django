@@ -47,22 +47,24 @@
         <h4 class="mb-1">{% get_theme_variables 'template_name' %}'ya Hoş Geldiniz! 👋</h4>
         <p class="mb-6">Lütfen hesabınıza giriş yapın</p>
         <div class="alert alert-primary small">
-          <p class="text-caption mb-1"> Kanat Takımı E-mail: <strong>simsekkanat@baykartech.com</strong> / Kullanıcı Adı: <strong>simsekkanat</strong>
+            <p class="text-caption mb-1"> Admin E-mail: <strong>simsekadmin@baykartech.com</strong> / Kullanıcı Adı: <strong>simsekadmin</strong> / Şifre: <strong>Ihaadmin.123</strong>
+            <span class="cursor-pointer" id="assembly-user"><i class="ti ti-help ti-xs text-body mb-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="hover focus" title="Admin" data-bs-content="Bütün sisteme hakimdir."></i></span>
+          </p>
+          <p class="text-caption mb-1"> Kanat Takımı E-mail: <strong>simsekkanat@baykartech.com</strong> / Kullanıcı Adı: <strong>simsekkanat</strong> / Şifre: <strong>Ihakanat.123</strong>
             <span class="cursor-pointer" id="wing-user"><i class="ti ti-help ti-xs text-body mb-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="hover focus" title="Kanat Takımı" data-bs-content="Sadece kanat parçalarını üretmek ve yönetmekle sorumludur; kanat parçalarını görüntüleme, güncelleme, silme ve oluşturma yetkisine sahiptir."></i></span>
           </p>
-          <p class="text-caption mb-1"> Gövde Takımı E-mail: <strong>simsekgovde@baykartech.com</strong> / Kullanıcı Adı: <strong>simsekgovde</strong>
+          <p class="text-caption mb-1"> Gövde Takımı E-mail: <strong>simsekgovde@baykartech.com</strong> / Kullanıcı Adı: <strong>simsekgovde</strong> / Şifre: <strong>Ihagovde.123</strong>
             <span class="cursor-pointer" id="body-user"><i class="ti ti-help ti-xs text-body mb-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="hover focus" title="Gövde Takımı" data-bs-content="Sadece gövde parçalarını üretmek ve yönetmekle sorumludur; gövde parçalarını görüntüleme, güncelleme, silme ve oluşturma yetkisine sahiptir."></i></span>
           </p>
-            <p class="text-caption mb-1"> Kuyruk Takımı E-mail: <strong>simsekkuyruk@baykartech.com</strong> / Kullanıcı Adı: <strong>simsekkuyruk</strong>
+            <p class="text-caption mb-1"> Kuyruk Takımı E-mail: <strong>simsekkuyruk@baykartech.com</strong> / Kullanıcı Adı: <strong>simsekkuyruk</strong> / Şifre: <strong>Ihakuyruk.123</strong>
             <span class="cursor-pointer" id="tail-user"><i class="ti ti-help ti-xs text-body mb-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="hover focus" title="Kuyruk Takımı" data-bs-content="Sadece kuyruk parçalarını üretmek ve yönetmekle sorumludur; kuyruk parçalarını görüntüleme, güncelleme, silme ve oluşturma yetkisine sahiptir."></i></span>
           </p>
-          <p class="text-caption mb-1"> Aviyonik Takımı E-mail: <strong>simsekaviyonik@baykartech.com</strong> / Kullanıcı Adı: <strong>simsekaviyonik</strong>
+          <p class="text-caption mb-1"> Aviyonik Takımı E-mail: <strong>simsekaviyonik@baykartech.com</strong> / Kullanıcı Adı: <strong>simsekaviyonik</strong> / Şifre: <strong>Ihaaviyonik.123</strong>
             <span class="cursor-pointer" id="avionics-user"><i class="ti ti-help ti-xs text-body mb-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="hover focus" title="Aviyonik Takımı" data-bs-content="Sadece aviyonik parçaları üretmek ve yönetmekle sorumludur; aviyonik parçaları görüntüleme, güncelleme, silme ve oluşturma yetkisine sahiptir."></i></span>
           </p>
-            <p class="text-caption mb-1"> Montaj Takımı E-mail: <strong>simsekmontaj@baykartech.com</strong> / Kullanıcı Adı: <strong>simsekmontaj</strong>
+            <p class="text-caption mb-1"> Montaj Takımı E-mail: <strong>simsekmontaj@baykartech.com</strong> / Kullanıcı Adı: <strong>simsekmontaj</strong> / Şifre: <strong>Ihamontaj.123</strong>
             <span class="cursor-pointer" id="assembly-user"><i class="ti ti-help ti-xs text-body mb-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="hover focus" title="Montaj Takımı" data-bs-content="Tüm uyumlu parçaları birleştirerek uçak montajını gerçekleştirmekle sorumludur; montaj sürecini başlatma, tamamlama ve montajı yapılan uçakları görüntüleme yetkisine sahiptir. Parça üretimi yapmaz, sadece montaj işlemleriyle ilgilenir."></i></span>
           </p>
-          <p class="text-caption mb-0">Şifre: <strong>Ihakiralama.123</strong></p>
         </div>
         {% if messages %}
         {% for message in messages %}
@@ -81,7 +83,7 @@
           <div class="mb-6 form-password-toggle">
             <label class="form-label" for="password">Password</label>
             <div class="input-group input-group-merge">
-              <input type="password" id="password" class="form-control" name="password" value="Ihakiralama.123" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+              <input type="password" id="password" class="form-control" name="password" value="Ihakanat.123" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
               <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
             </div>
           </div>

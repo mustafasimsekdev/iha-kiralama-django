@@ -41,7 +41,7 @@ TEMPLATE_CONFIG = {
 # ? Personalize template by changing theme variables (For ex: Name, URL Version etc...)
 THEME_VARIABLES = {
     "creator_name": "MustafaSimsek",
-    "creator_url": "https://pixinvent.com/",
+    "creator_url": "https://www.linkedin.com/in/mustafasimsekdev",
     "template_name": "İHA Kiralama",
     "template_suffix": "Django",
     "template_description": "İHA (İnsansız Hava Aracı) Kiralama ve Üretim Yönetimi Projesi: Django kullanarak personel, parça, takım ve uçak üretim süreçlerini yönetmeyi sağlayan, server-side ve client-side destekli modern bir yönetim platformu. Takım bazlı parça üretimi, envanter kontrolü, montaj işlemleri ve eksik parça uyarıları gibi fonksiyonları içeren kapsamlı bir çözüm.",
