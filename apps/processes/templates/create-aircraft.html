@@ -1,0 +1,107 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ title }} Oluştur{% endblock %}
+
+{% block vendor_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/libs/quill/typography.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/quill/katex.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/quill/editor.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/select2/select2.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/dropzone/dropzone.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/flatpickr/flatpickr.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/tagify/tagify.css' %}"/>
+{% endblock vendor_css %}
+
+{% block vendor_js %}
+    {{ block.super }}
+    <script src="{% static 'vendor/libs/quill/katex.js' %}"></script>
+    <script src="{% static 'vendor/libs/quill/quill.js' %}"></script>
+    <script src="{% static 'vendor/libs/select2/select2.js' %}"></script>
+    <script src="{% static 'vendor/libs/dropzone/dropzone.js' %}"></script>
+    <script src="{% static 'vendor/libs/jquery-repeater/jquery-repeater.js' %}"></script>
+    <script src="{% static 'vendor/libs/flatpickr/flatpickr.js' %}"></script>
+    <script src="{% static 'vendor/libs/tagify/tagify.js' %}"></script>
+{% endblock vendor_js %}
+
+
+
+{% block content %}
+    <div class="app-ecommerce">
+
+        <!-- Add Product -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+
+            <div class="d-flex flex-column justify-content-center">
+                <h4 class="mb-1">{{ title }} Takımı</h4>
+                <p class="mb-0">Lütfen bir uçak seçin ve {{ title|lower }} oluşturun</p>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- First column-->
+            <div class="col-12">
+                <!-- Product Information -->
+                <div class="card mb-6">
+
+                    <div class="card-body">
+                        <div class="mb-2 col ecommerce-select2-dropdown">
+                            <label class="form-label mb-1" for="aircraft_type">
+                                Uçak Tipi
+                            </label>
+                            <select id="aircraft_type" class="select2 form-select" data-placeholder="Uçak seçiniz">
+                                <option value="">Uçak seçiniz</option>
+                                {% for foo in aircraft %}
+                                    <option value={{ foo.id }}>{{ foo.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-flex align-content-center flex-wrap gap-4">
+                            <button id="produce-part" class="btn btn-primary">{{ title }} oluştur</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Product Information -->
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block page_js %}
+    {{ block.super }}
+    <script>
+        // Ajax ile formu gönderme
+        $('#produce-part').on('click', function (e) {
+            e.preventDefault();
+
+            const aircraftType = $('#aircraft_type').val();
+
+            // Boş değer kontrolü
+            if (!aircraftType) {
+                alert("Lütfen bir uçak tipi seçiniz.");
+                return;  // Seçim yapılmadığında işlem durdurulur
+            }
+
+            $.ajax({
+                url: window.location.href,  // URLs.py dosyasında bu ismi tanımlayın
+                type: "POST",
+                data: {
+                    'aircraft_type': aircraftType,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    alert(response.message);
+                    location.reload(true);
+                },
+                error: function (error) {
+                    alert(error.message);
+                    location.reload(true);
+                }
+            });
+        });
+    </script>
+{% endblock page_js %}

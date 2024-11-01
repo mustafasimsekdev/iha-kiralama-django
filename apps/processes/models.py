@@ -60,17 +60,16 @@ class PartProduction(models.Model):
     recycled_date = models.DateTimeField(null=True, blank=True)
     recycled_personal = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
                                           related_name='recycled_parts')
-
     is_assembled = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.part.name} üretildi ({self.produced_date})"
 
-    def produce_part(self, personal, part, aircraft_type, quantity=1):
+    def produce_part(self, user, part, aircraft_type, quantity=1):
         """Parça üretimini gerçekleştirir ve stoğu artırır."""
         # Üretim bilgilerini kaydet
-        self.producing_personal = personal  # Oturum açmış kullanıcı
-        self.team = personal.team  # Kullanıcının takımı
+        self.producing_personal = user  # Oturum açmış kullanıcı
+        self.team = user.personal.team  # Kullanıcının takımı
         self.part = part
         self.aircraft_type = aircraft_type
         self.produced_date = timezone.now()

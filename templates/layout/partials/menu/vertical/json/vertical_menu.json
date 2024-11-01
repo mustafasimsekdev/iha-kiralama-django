@@ -12,31 +12,98 @@
         {
           "url": "index",
           "name": "Ana Sayfa",
-          "slug": "home-page"
+          "slug": "home-page",
+          "teams": [
+            "Kanat",
+            "Gövde",
+            "Kuyruk",
+            "Aviyonik",
+            "Montaj"
+          ],
+          "team_name": ""
         },
         {
-          "url": "dashboard-crm",
-          "name": "CRM",
-          "slug": "dashboard-crm"
+          "url": "create_part",
+          "name": "Kanat Oluştur",
+          "slug": "create-part-kanat",
+          "teams": [
+            "Kanat"
+          ],
+          "team_name": "kanat"
         },
         {
-          "url": "/app/ecommerce/dashboard",
-          "external": true,
-          "name": "eCommerce",
-          "slug": "app-ecommerce-dashboard"
+          "url": "list_part",
+          "name": "Kanat Listesi",
+          "slug": "list-part-kanat",
+          "teams": [
+            "Kanat"
+          ],
+          "team_name": "kanat"
         },
         {
-          "url": "/app/logistics/dashboard",
-          "external": true,
-          "name": "Logistics",
-          "slug": "app-logistics-dashboard"
+          "url": "create_part",
+          "name": "Gövde Oluştur",
+          "slug": "create-part-govde",
+          "teams": [
+            "Gövde"
+          ],
+          "team_name": "govde"
         },
         {
-          "url": "/app/academy/dashboard",
-          "external": true,
-          "name": "Academy",
-          "slug": "app-academy-dashboard"
+          "url": "list_part",
+          "name": "Gövde Listesi",
+          "slug": "list-part-govde",
+          "teams": [
+            "Gövde"
+          ],
+          "team_name": "govde"
+        },
+        {
+          "url": "create_part",
+          "name": "Kuyruk Oluştur",
+          "slug": "create-part-kuyruk",
+          "teams": [
+            "Kuyruk"
+          ],
+          "team_name": "kuyruk"
+        },
+        {
+          "url": "list_part",
+          "name": "Kuyruk Listesi",
+          "slug": "list-part-kuyruk",
+          "teams": [
+            "Kuyruk"
+          ],
+          "team_name": "kuyruk"
+        },
+        {
+          "url": "create_part",
+          "name": "Aviyonik Oluştur",
+          "slug": "create-part-aviyonik",
+          "teams": [
+            "Aviyonik"
+          ],
+          "team_name": "aviyonik"
+        },
+        {
+          "url": "list_part",
+          "name": "Aviyonik Listesi",
+          "slug": "list-part-aviyonik",
+          "teams": [
+            "Aviyonik"
+          ],
+          "team_name": "aviyonik"
+        },
+        {
+          "url": "create_part",
+          "name": "Montaj Oluştur",
+          "slug": "create-part-assembly",
+          "teams": [
+            "Montaj"
+          ],
+          "team_name": "montaj"
         }
+
       ]
     }
   ]

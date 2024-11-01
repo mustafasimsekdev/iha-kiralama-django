@@ -65,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'config.middlewares.CurrentUserMiddleware'
 ]
 
 ROOT_URLCONF = 'iha_kiralama.urls'
@@ -80,7 +81,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                "config.context_processors.language_code",
+                'config.context_processors.language_code',
+                'config.context_processors.user_team_processor'
             ],
             "libraries": {
                 "theme": "config.template_tags.theme",
