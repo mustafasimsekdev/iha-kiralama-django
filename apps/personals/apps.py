@@ -7,4 +7,4 @@ class AuthConfig(AppConfig):
     label = 'personals'
 
     def ready(self):
-        pass
+        import apps.personals.signals

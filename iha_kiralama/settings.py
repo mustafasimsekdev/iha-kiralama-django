@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'apps.personals',
     'authentication',
     'apps.dashboards',
-    'apps.pages'
+    'apps.pages',
+    'apps.processes'
 
 ]
 
