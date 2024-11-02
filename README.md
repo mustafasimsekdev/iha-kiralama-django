@@ -20,7 +20,8 @@ Bu proje, İHA (İnsansız Hava Aracı) kiralama ve üretim yönetimi için geli
    - **Envanter Yönetimi**: Eksik parçalar için uyarılar verilir ve stoklar takip edilir.
    - **Kullanıcı Yetkilendirme**: Her kullanıcının takım bazında belirli yetkileri vardır.
    - **Varsayılan Veriler**: Signals ile bazı varsayılan veriler (takımlar, parçalar ve kullanıcılar) otomatik olarak veritabanına eklenir.
-
+   - **Listeleme ve Filtreleme**: Parça ve uçakların detaylı listelenmesi için DataTable kullanılmıştır. 
+   - **AJAX Desteği**: HTML şablonlarında POST ve GET işlemleri için AJAX kullanılmıştır.
 ---
 
 ### Projeyi Çalıştırmak İçin Adımlar
