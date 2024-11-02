@@ -3,18 +3,24 @@ from django.dispatch import receiver
 from .models import Team
 from django.contrib.auth.models import User
 
-
+# Veritabanı migrasyonları tamamlandığında varsayılan takımları oluşturur
 @receiver(post_migrate)
 def create_default_teams(sender, **kwargs):
-    if sender.name == 'personals':  # Ensures it only runs for your app
+    # Sadece 'personals' uygulaması için çalışmasını sağlıyoruz
+    if sender.name == 'personals':
+        # Varsayılan takım isimleri
         teams = ["Kanat", "Gövde", "Kuyruk", "Aviyonik", "Montaj"]
+
+        # Her takım ismini kontrol eder ve eğer mevcut değilse oluşturur
         for team_name in teams:
             Team.objects.get_or_create(name=team_name)
 
-
+# Veritabanı migrasyonları tamamlandığında varsayılan takımları oluşturur
 @receiver(post_migrate)
 def create_default_personals(sender, **kwargs):
-    if sender.name == 'personals':  # Ensures it only runs for your app
+    # Sadece 'personals' uygulaması için çalışmasını sağlıyoruz
+    if sender.name == 'personals':
+        # Oluşturulacak varsayılan kullanıcı bilgileri listesi
         personals = [
             {'username': 'simsekkanat', 'first_name': 'Kanat', 'last_name': 'Simsek',
              'email': 'simsekkanat@baykartech.com', 'password': 'Ihakanat.123', 'team': 'Kanat'},

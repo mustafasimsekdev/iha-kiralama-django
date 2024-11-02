@@ -3,9 +3,13 @@ from config import TemplateLayout
 
 
 class DashboardsView(TemplateView):
-    # Predefined function
+    # `TemplateView` sınıfını temel alan bir sınıf görünümü oluşturur.
+
     def get_context_data(self, **kwargs):
-        # A function to init the global layout. It is defined in config/__init__.py file
+        # `super().get_context_data(**kwargs)` ile üst sınıftan varsayılan bağlam verilerini alır.
+        # `TemplateLayout.init()` fonksiyonu ile global düzen (layout) ayarlarını başlatır.
+        # Bu başlatma işlemi, bağlamı daha düzenli hale getirir.
         context = TemplateLayout.init(self, super().get_context_data(**kwargs))
 
+        # Güncellenmiş bağlamı döndürür.
         return context

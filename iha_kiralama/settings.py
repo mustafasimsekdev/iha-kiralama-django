@@ -18,28 +18,25 @@ from dotenv import load_dotenv
 
 from config.template import TEMPLATE_CONFIG, THEME_LAYOUT_DIR, THEME_VARIABLES
 
-load_dotenv()  # take environment variables from .env.
+load_dotenv()  # Çevre değişkenlerini `.env` dosyasından alır
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Projenin ana dizini
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# Güvenlik ve hassas bilgiler
 SECRET_KEY = os.environ.get("SECRET_KEY", default='django-insecure-5w3#dnf0*%jm2yg-p&vvn-2#za1%7w3u!8^8x_w(%8^svdh_y*')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", 'True').lower() in ['true', 'yes', '1']
 
-# https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
+# Django'nun izin verdiği hostlar
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
 
-# Current DJANGO_ENVIRONMENT
+# Proje ortamı (geliştirme, üretim vb.)
 ENVIRONMENT = os.environ.get("DJANGO_ENVIRONMENT", default="local")
 
-# Application definition
-
+# Uygulama tanımları
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -55,6 +52,7 @@ INSTALLED_APPS = [
 
 ]
 
+# Django orta katmanları
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -73,7 +71,7 @@ ROOT_URLCONF = 'iha_kiralama.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [BASE_DIR / "templates"], # Şablonlar dizini
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,11 +79,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'config.context_processors.language_code',
-                'config.context_processors.user_team_processor'
+                'config.context_processors.language_code'  # Dil kodu için özel context processor
             ],
             "libraries": {
-                "theme": "config.template_tags.theme",
+                "theme": "config.template_tags.theme",  # Tema yardımı fonksiyonları
             },
             "builtins": [
                 "django.templatetags.static",
@@ -100,6 +97,7 @@ WSGI_APPLICATION = 'iha_kiralama.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Veritabanı ayarları
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get("DB_ENGINE", default=''),
@@ -129,15 +127,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-# Enable i18n and set the list of supported languages
+# Uluslararasılaştırma ve zamanlama ayarları
 LANGUAGES = [
     ("tr", _("Turkish")),
     ("en", _("English")),
-    # Add more languages as needed
 ]
 
 LANGUAGE_CODE = 'tr'
@@ -155,14 +151,14 @@ LOCALE_PATHS = [
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+# Statik dosyalar ayarları
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
 STATICFILES_DIRS = [
     BASE_DIR / "src/assets",
 ]
 
-# Default URL on which Django application runs for specific environment
+# Uygulama URL'si
 BASE_URL = os.environ.get("BASE_URL", default="http://127.0.0.1:8000")
 
 # Default primary key field type
@@ -170,15 +166,14 @@ BASE_URL = os.environ.get("BASE_URL", default="http://127.0.0.1:8000")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Template Settings
+# Tema ve şablon ayarları
 # ------------------------------------------------------------------------------
 
 THEME_LAYOUT_DIR = THEME_LAYOUT_DIR
 TEMPLATE_CONFIG = TEMPLATE_CONFIG
 THEME_VARIABLES = THEME_VARIABLES
 
-
-# Login
+# Giriş ve çıkış ayarları
 # ------------------------------------------------------------------------------
 LOGIN_URL = "/login/"
 LOGOUT_REDIRECT_URL = "/login/"

@@ -7,4 +7,8 @@ class AuthConfig(AppConfig):
     label = 'personals'
 
     def ready(self):
+        # Uygulama başlatıldığında çalışacak kodları tanımlar.
+        # Signals (sinyal) mekanizmasını yükler.
+
         import apps.personals.signals
+        # Bu, uygulama başlatıldığında sinyallerin çalışması için gerekli olan bağlantıları kurar.

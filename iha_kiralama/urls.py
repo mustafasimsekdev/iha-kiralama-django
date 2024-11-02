@@ -16,18 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from config.views import SystemView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path("", include("authentication.urls")),
-    path("", include("apps.dashboards.urls")),
-    path("", include("apps.pages.urls")),
-
-    path("", include("apps.processes.urls")),
+    path('admin/', admin.site.urls),  # Django admin paneline erişim sağlar
+    path("", include("authentication.urls")),  # authentication uygulamasındaki URL'leri projeye dahil eder
+    path("", include("apps.dashboards.urls")),  # dashboards uygulamasındaki URL'leri projeye dahil eder
+    path("", include("apps.pages.urls")),  # pages uygulamasındaki URL'leri projeye dahil eder
+    path("", include("apps.processes.urls")),  # processes uygulamasındaki URL'leri projeye dahil eder
 ]
-
-handler404 = SystemView.as_view(template_name="pages_misc_error.html", status=404)
-handler403 = SystemView.as_view(template_name="pages_misc_not_authorized.html", status=403)
-handler400 = SystemView.as_view(template_name="pages_misc_error.html", status=400)
-handler500 = SystemView.as_view(template_name="pages_misc_error.html", status=500)

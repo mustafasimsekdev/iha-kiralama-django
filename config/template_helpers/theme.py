@@ -4,10 +4,11 @@ import os
 from importlib import import_module, util
 
 
-# Core TemplateHelper class
+# Temel şablon yardımcı sınıfı
 class TemplateHelper:
-    # Init the Template Context using TEMPLATE_CONFIG
+    # Şablon context'ini TEMPLATE_CONFIG ile başlatan fonksiyon
     def init_context(context):
+        # settings.TEMPLATE_CONFIG'ten değerleri context'e ekler
         context.update(
             {
                 "layout": settings.TEMPLATE_CONFIG.get("layout"),
@@ -35,9 +36,9 @@ class TemplateHelper:
         )
         return context
 
-    # ? Map context variables to template class/value/variables names
+    # Şablon sınıfı/değeri/değişken adları ile context değişkenlerini eşleştirir
     def map_context(context):
-        #! Header Type (horizontal support only)
+        # Yatay layout için header tipi ayarları
         if context.get("layout") == "horizontal":
             if context.get("header_type") == "fixed":
                 context["header_type_class"] = "layout-menu-fixed"
@@ -48,7 +49,7 @@ class TemplateHelper:
         else:
             context["header_type_class"] = ""
 
-        #! Navbar Type (vertical/front support only)
+        # Navbar tipi ayarları (dikey/front destekli)
         if context.get("layout") != "horizontal":
             if context.get("navbar_type") == "fixed":
                 context["navbar_type_class"] = "layout-navbar-fixed"
@@ -59,42 +60,42 @@ class TemplateHelper:
         else:
             context["navbar_type_class"] = ""
 
-        # Menu collapsed
+        # Menü sıkıştırılmış mı?
         context["menu_collapsed_class"] = (
             "layout-menu-collapsed" if context.get("menu_collapsed") else ""
         )
 
-        #! Menu Fixed (vertical support only)
+        # Dikey layout için menü sabit mi?
         if context.get("layout") == "vertical":
             if context.get("menu_fixed") is True:
                 context["menu_fixed_class"] = "layout-menu-fixed"
             else:
                 context["menu_fixed_class"] = ""
 
-        # Footer Fixed
+        # Footer sabit mi?
         context["footer_fixed_class"] = (
             "layout-footer-fixed" if context.get("footer_fixed") else ""
         )
 
-        # RTL Supported template
+        # RTL destekli şablon
         context["rtl_support_value"] = "/rtl" if context.get("rtl_support") else ""
 
-        # RTL Mode/Layout
+        # RTL modu ve metin yönü
         context["rtl_mode_value"], context["text_direction_value"] = (
             ("rtl", "rtl") if context.get("rtl_mode") else ("ltr", "ltr")
         )
 
-        #!  Show dropdown on hover (Horizontal menu)
+        # Yatay menüde dropdown'u hover ile gösterme
         context["show_dropdown_onhover_value"] = (
             "true" if context.get("show_dropdown_onhover") else "false"
         )
 
-        # Display Customizer
+        # Özelleştirici gösteriliyor mu?
         context["display_customizer_class"] = (
             "" if context.get("display_customizer") else "customizer-hide"
         )
 
-        # Content Layout
+        # İçerik layout'u geniş mi, dar mı?
         if context.get("content_layout") == "wide":
             context["container_class"] = "container-fluid"
             context["content_layout_class"] = "layout-wide"
@@ -102,36 +103,36 @@ class TemplateHelper:
             context["container_class"] = "container-xxl"
             context["content_layout_class"] = "layout-compact"
 
-        # Detached Navbar
+        # Navbar ayrık mı?
         if context.get("navbar_detached") == True:
             context["navbar_detached_class"] = "navbar-detached"
         else:
             context["navbar_detached_class"] = ""
 
-    # Get theme variables by scope
+    # Belirli bir kapsamda tema değişkenlerini döner
     def get_theme_variables(scope):
         return settings.THEME_VARIABLES[scope]
 
-    # Get theme config by scope
+    # Belirli bir kapsamda tema yapılandırmasını döner
     def get_theme_config(scope):
         return settings.TEMPLATE_CONFIG[scope]
 
-    # Set the current page layout and init the layout bootstrap file
+    # Geçerli sayfa layout'unu ayarlar ve layout bootstrap dosyasını başlatır
     def set_layout(view, context={}):
-        # Extract layout from the view path
+        # Görünüm yolundan layout'u çıkar
         layout = os.path.splitext(view)[0].split("/")[0]
 
-        # Get module path
+        # Modül yolunu al
         module = f"templates.{settings.THEME_LAYOUT_DIR.replace('/', '.')}.bootstrap.{layout}"
 
-        # Check if the bootstrap file is exist
+        # Eğer bootstrap dosyası varsa otomatik import ve başlatma yapar
         if util.find_spec(module) is not None:
-            # Auto import and init the default bootstrap.py file from the theme
             TemplateBootstrap = TemplateHelper.import_class(
                 module, f"TemplateBootstrap{layout.title().replace('_', '')}"
             )
             TemplateBootstrap.init(context)
         else:
+            # Eğer bootstrap dosyası yoksa default bootstrap'i kullanır
             module = f"templates.{settings.THEME_LAYOUT_DIR.replace('/', '.')}.bootstrap.default"
 
             TemplateBootstrap = TemplateHelper.import_class(
@@ -141,7 +142,7 @@ class TemplateHelper:
 
         return f"{settings.THEME_LAYOUT_DIR}/{view}"
 
-    # Import a module by string
+    # Modülü string ile import eder
     def import_class(fromModule, import_className):
         module = import_module(fromModule)
         return getattr(module, import_className)

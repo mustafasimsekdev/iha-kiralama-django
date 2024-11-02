@@ -7,68 +7,71 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib import messages
 
-"""
-This file is a view controller for multiple pages as a module.
-Here you can override the page view layout.
-Refer to personals/urls.py file for more pages.
-"""
 
-
+# Authentication ile ilgili view
 class AuthView(TemplateView):
-    # Predefined function
+    # Varsayılan olarak context verisini hazırlayan fonksiyon
     def get_context_data(self, **kwargs):
-        # A function to init the global layout. It is defined in config/__init__.py file
+        # Global layout'u başlatan bir fonksiyon
         context = TemplateLayout.init(self, super().get_context_data(**kwargs))
-        # Update the context
+        # Context'i güncelleme işlemi
         context.update(
             {
                 "layout_path": TemplateHelper.set_layout("layout_blank.html", context),
             }
         )
 
-        return context
+        return context  # Güncellenmiş context'i döndür
 
 
+# Login işlemleri için view
 class LoginView(AuthView):
     def get(self, request):
+        # Eğer kullanıcı zaten giriş yapmışsa, ana sayfaya yönlendirilir
         if request.user.is_authenticated:
-            # If the user is already logged in, redirect them to the home page or another appropriate page.
-            return redirect("index")  # Replace 'index' with the actual URL name for the home page
+            return redirect("index")  # 'index' ana sayfa için URL adı
 
-        # Render the login page for users who are not logged in.
+        # Eğer kullanıcı giriş yapmamışsa login sayfası render edilir
         return super().get(request)
 
     def post(self, request):
         if request.method == "POST":
+            # Kullanıcı adı veya e-posta ve şifreyi formdan alır
             username = request.POST.get("email-username")
             password = request.POST.get("password")
 
+            # Kullanıcı adı veya şifre boşsa hata mesajı verir ve login sayfasına yönlendirir
             if not (username and password):
-                messages.error(request, "Please enter your username and password.")
+                messages.error(request, "Lütfen kullanıcı adınızı ve şifrenizi giriniz.")
                 return redirect("login")
 
+            # Eğer kullanıcı adı bir e-posta adresiyse, e-posta ile kullanıcıyı bulur
             if "@" in username:
                 user_email = User.objects.filter(email=username).first()
                 if user_email is None:
-                    messages.error(request, "Please enter a valid email.")
+                    messages.error(request, "Lütfen geçerli bir e-posta adresi giriniz.")
                     return redirect("login")
                 username = user_email.username
 
+            # Kullanıcı adı veritabanında yoksa hata mesajı verir
             user_email = User.objects.filter(username=username).first()
             if user_email is None:
-                messages.error(request, "Please enter a valid username.")
+                messages.error(request, "Lütfen geçerli bir kullanıcı adı giriniz.")
                 return redirect("login")
 
+            # Kullanıcıyı doğrulama (authenticate) işlemi
             authenticated_user = authenticate(request, username=username, password=password)
             if authenticated_user is not None:
-                # Login the user if authentication is successful
+                # Giriş başarılıysa kullanıcıyı giriş yapmış olarak işaretler
                 login(request, authenticated_user)
 
-                # Redirect to the page the user was trying to access before logging in
+                # Eğer 'next' parametresi varsa kullanıcıyı o sayfaya yönlendirir
                 if "next" in request.POST:
                     return redirect(request.POST["next"])
-                else:  # Redirect to the home page or another appropriate page
+                else:
+                    # Aksi halde ana sayfaya yönlendirir
                     return redirect("index")
             else:
-                messages.error(request, "Please enter a valid username.")
+                # Doğrulama başarısızsa hata mesajı verir
+                messages.error(request, "Lütfen geçerli bir kullanıcı adı giriniz.")
                 return redirect("login")

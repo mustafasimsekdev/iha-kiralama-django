@@ -4,8 +4,9 @@ from django.contrib.auth.models import User
 from apps.personals.models import Team
 
 
-# Models for Parts, Aircraft, and Teams
+# Parça modelini tanımlar, her parça benzersiz bir isimle temsil edilir
 class Part(models.Model):
+    # Parça ismini saklayan bir karakter alanı; her parça ismi benzersiz (unique) olmalıdır
     name = models.CharField(max_length=50, unique=True)
     created_at = models.DateTimeField('Created at', auto_now_add=True)
     updated_at = models.DateTimeField('Updated at', auto_now=True)
@@ -14,7 +15,9 @@ class Part(models.Model):
         return self.name
 
 
+# Uçak modelini tanımlar, her uçak benzersiz bir isimle temsil edilir
 class Aircraft(models.Model):
+    # Uçak ismini saklayan bir karakter alanı; her uçak ismi benzersiz (unique) olmalıdır
     name = models.CharField(max_length=50, unique=True)
     created_at = models.DateTimeField('Created at', auto_now_add=True)
     updated_at = models.DateTimeField('Updated at', auto_now=True)
@@ -23,10 +26,15 @@ class Aircraft(models.Model):
         return self.name
 
 
+# Parça stoğunu temsil eden model
 class PartStock(models.Model):
+    # Parça ile ilişkili yabancı anahtar, her parça birden fazla stok kaydına sahip olabilir
     part = models.ForeignKey(Part, on_delete=models.CASCADE, related_name='stocks')
+    # Uçağın türü ile ilişkili yabancı anahtar, her uçak türü için ayrı stok kaydı olabilir
     aircraft_type = models.ForeignKey(Aircraft, on_delete=models.CASCADE, related_name='stocks')
+    # Takım ile ilişkili yabancı anahtar, her takım kendi parçasını üretebilir ve stoğa ekleyebilir
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    # Stok miktarını temsil eden pozitif tam sayı alanı, varsayılan olarak 0
     quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -46,20 +54,26 @@ class PartStock(models.Model):
             raise ValueError(f"{self.part.name} parçasının {self.aircraft_type.name} için yeterli stoku yok!")
 
 
+# Parça üretim kaydını temsil eden model
 class PartProduction(models.Model):
+    # Parça ile ilişki, her parça üretim kaydı bir parçaya aittir
     part = models.ForeignKey(Part, on_delete=models.CASCADE)
+    # Üretimi gerçekleştiren takım ile ilişki
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
+    # Üretimi gerçekleştiren kişi (User modeli ile ilişki), null olabilir
     producing_personal = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='produced_parts')
+    # Üretim tarihi, varsayılan olarak şu anki zamana ayarlanır
     produced_date = models.DateTimeField(default=timezone.now)
 
-    # Parçanın ait olduğu uçak tipi
+    # Parçanın ait olduğu uçak tipi, null ve boş bırakılabilir
     aircraft_type = models.ForeignKey(Aircraft, on_delete=models.SET_NULL, null=True, blank=True, related_name='parts')
 
-    # Silme işlemi bilgileri
+    # Geri dönüşüm bilgileri
     recycled_date = models.DateTimeField(null=True, blank=True)
     recycled_personal = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
                                           related_name='recycled_parts')
+    # Parçanın montaj durumu
     is_assembled = models.BooleanField(default=False)
 
     def __str__(self):
@@ -67,9 +81,8 @@ class PartProduction(models.Model):
 
     def produce_part(self, user, part, aircraft_type, quantity=1):
         """Parça üretimini gerçekleştirir ve stoğu artırır."""
-        # Üretim bilgilerini kaydet
-        self.producing_personal = user  # Oturum açmış kullanıcı
-        self.team = user.personal.team  # Kullanıcının takımı
+        self.producing_personal = user
+        self.team = user.personal.team
         self.part = part
         self.aircraft_type = aircraft_type
         self.produced_date = timezone.now()
@@ -83,7 +96,6 @@ class PartProduction(models.Model):
         )
         # Üretim miktarını stoğa ekle
         part_stock.increase_stock(amount=quantity)
-
 
     def recycle_part(self, personal):
         """Belirli bir PartProduction nesnesini geri dönüşüme gönderir ve stoğu azaltır."""
@@ -106,10 +118,13 @@ class PartProduction(models.Model):
         self.save()
 
 
-# Uçak Montaj Modeli
+# Uçak montaj sürecini temsil eden model
 class AircraftProduction(models.Model):
+    # Montajı yapılan uçak ile ilişki, her montaj işlemi bir uçağa aittir
     aircraft = models.ForeignKey(Aircraft, on_delete=models.CASCADE)
+    # Montajı gerçekleştiren kullanıcı, null olabilir
     assembly_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    # Montaj tarihi, varsayılan olarak şu anki zamana ayarlanır
     assembly_date = models.DateTimeField(default=timezone.now)
 
     def complete_assembly(self, aircraft, assembly_user, used_part_productions):
@@ -138,9 +153,11 @@ class AircraftProduction(models.Model):
         return f"{self.id}: {self.aircraft.name} - Montaj Tarihi: {self.assembly_date}"
 
 
-# Uçakta Kullanılan Parçalar Modeli
+# Uçakta kullanılan parçaları temsil eden model
 class PartOfAircraft(models.Model):
+    # Uçağın montaj kaydı ile ilişki, her parçanın hangi montaj işleminde kullanıldığını belirtir
     aircraft_production = models.ForeignKey(AircraftProduction, on_delete=models.CASCADE, related_name='parts_used')
+    # Kullanılan parça üretim kaydı ile ilişki, parçanın üretim detaylarını belirtir
     part_production = models.ForeignKey(PartProduction, on_delete=models.CASCADE)
 
     def __str__(self):

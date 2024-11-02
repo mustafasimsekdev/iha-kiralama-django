@@ -1,18 +1,15 @@
 from django.views.generic import TemplateView
 from config import TemplateLayout
 
-
-"""
-This file is a view controller for multiple pages as a module.
-Here you can override the page view layout.
-Refer to pages/urls.py file for more pages.
-"""
-
-
 class PagesView(TemplateView):
-    # Predefined function
+    # `TemplateView` sınıfını temel alan bir görünüm sınıfı oluşturur.
+
+    # Görünüme ait bağlam verilerini (context data) elde eden özel bir işlev.
     def get_context_data(self, **kwargs):
-        # A function to init the global layout. It is defined in config/__init__.py file
+        # Üst sınıfın `get_context_data` işlevini çağırarak varsayılan bağlam verilerini alır.
+        # `TemplateLayout.init` fonksiyonunu kullanarak global düzen (layout) ayarlarını başlatır.
+        # Bu başlatma işlemi, bağlamı daha kapsamlı hale getirir.
         context = TemplateLayout.init(self, super().get_context_data(**kwargs))
 
+        # Güncellenmiş bağlamı döndürür.
         return context

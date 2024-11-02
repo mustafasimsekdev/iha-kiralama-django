@@ -1,21 +1,25 @@
 from django.conf import settings
 
 
+# Özel ayarları template context'ine ekler
 def my_setting(request):
+    # settings dosyasındaki tüm ayarları `MY_SETTING` anahtarı altında template'e gönderir
     return {'MY_SETTING': settings}
 
+
+# Kullanıcının dil kodunu template context'ine ekler
 def language_code(request):
+    # Geçerli dil kodunu `LANGUAGE_CODE` anahtarı altında template'e gönderir
     return {"LANGUAGE_CODE": request.LANGUAGE_CODE}
 
+
+# Çerezleri template context'ine ekler
 def get_cookie(request):
+    # Tüm çerezleri `COOKIES` anahtarı altında template'e gönderir
     return {"COOKIES": request.COOKIES}
 
-# Add the 'ENVIRONMENT' setting to the template context
-def environment(request):
-    return {'ENVIRONMENT': settings.ENVIRONMENT}
 
-def user_team_processor(request):
-    """Adds the user's team information to the context."""
-    return {
-        'user_team': request.user.team.name if request.user.is_authenticated and hasattr(request.user, 'team') else None
-    }
+# Ortam (development, production, vb.) ayarını template context'ine ekler
+def environment(request):
+    # settings dosyasındaki `ENVIRONMENT` ayarını `ENVIRONMENT` anahtarı altında template'e gönderir
+    return {'ENVIRONMENT': settings.ENVIRONMENT}
