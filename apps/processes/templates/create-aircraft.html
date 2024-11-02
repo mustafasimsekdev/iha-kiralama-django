@@ -61,7 +61,7 @@
                             </select>
                         </div>
                         <div class="d-flex align-content-center flex-wrap gap-4">
-                            <button id="produce-part" class="btn btn-primary">{{ title }} oluştur</button>
+                            <button id="produce-aircraft" class="btn btn-primary">{{ title }} oluştur</button>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
     {{ block.super }}
     <script>
         // Ajax ile formu gönderme
-        $('#produce-part').on('click', function (e) {
+        $('#produce-aircraft').on('click', function (e) {
             e.preventDefault();
 
             const aircraftType = $('#aircraft_type').val();
@@ -94,11 +94,18 @@
                     'csrfmiddlewaretoken': '{{ csrf_token }}'
                 },
                 success: function (response) {
-                    alert(response.message);
+                    // 'response' içindeki 'message' anahtarını kontrol ediyoruz
+                    if (response.message) {
+                        alert(response.message);
+                    } else {
+                        alert("Başarılı, ancak mesaj bulunamadı.");
+                    }
                     location.reload(true);
                 },
-                error: function (error) {
-                    alert(error.message);
+                error: function (xhr, status, error) {
+                    // Hata mesajını xhr.responseJSON üzerinden alabiliriz
+                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Bir hata oluştu.";
+                    alert(errorMessage);
                     location.reload(true);
                 }
             });

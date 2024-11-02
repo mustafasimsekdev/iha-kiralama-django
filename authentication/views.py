@@ -19,7 +19,6 @@ class AuthView(TemplateView):
     def get_context_data(self, **kwargs):
         # A function to init the global layout. It is defined in config/__init__.py file
         context = TemplateLayout.init(self, super().get_context_data(**kwargs))
-        print(f"autview calisti")
         # Update the context
         context.update(
             {
@@ -31,8 +30,6 @@ class AuthView(TemplateView):
 
 
 class LoginView(AuthView):
-    print('loginview calisti')
-
     def get(self, request):
         if request.user.is_authenticated:
             # If the user is already logged in, redirect them to the home page or another appropriate page.

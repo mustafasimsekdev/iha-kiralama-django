@@ -5,7 +5,6 @@ def my_setting(request):
     return {'MY_SETTING': settings}
 
 def language_code(request):
-    print("LANGUAGE_CODE", request.LANGUAGE_CODE)
     return {"LANGUAGE_CODE": request.LANGUAGE_CODE}
 
 def get_cookie(request):

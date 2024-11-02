@@ -15,7 +15,6 @@ class UsernameOrEmailAuthBackend(ModelBackend):
         Overrides the authenticate method to allow personals to log in using their email address or username.
         """
         try:
-            print(username_email)
             user = User.objects.get(
                 Q(username=username_email) | Q(email=username_email))
             if user.check_password(password):

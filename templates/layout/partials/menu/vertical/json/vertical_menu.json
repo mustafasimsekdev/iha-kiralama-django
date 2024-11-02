@@ -4,10 +4,7 @@
       "name": "Sayfalar",
       "icon": "menu-icon tf-icons ti ti-smart-home",
       "slug": "pages",
-      "badge": [
-        "danger",
-        "5"
-      ],
+      "badge": [],
       "submenu": [
         {
           "url": "index",
@@ -95,15 +92,23 @@
           "team_name": "aviyonik"
         },
         {
-          "url": "create_part",
+          "url": "assembly_aircraft",
           "name": "Montaj Oluştur",
           "slug": "create-part-assembly",
           "teams": [
             "Montaj"
           ],
           "team_name": "montaj"
+        },
+        {
+          "url": "list_aircraft",
+          "name": "Uçak Listesi",
+          "slug": "list-part-assembly",
+          "teams": [
+            "Montaj"
+          ],
+          "team_name": "montaj"
         }
-
       ]
     }
   ]

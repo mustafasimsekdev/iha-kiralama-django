@@ -1,0 +1,154 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ title }} Listesi{% endblock %}
+
+{% block vendor_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/flatpickr/flatpickr.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/libs/@form-validation/form-validation.css' %}"/>
+    <!-- jQuery Confirm CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css">
+
+{% endblock vendor_css %}
+
+{% block vendor_js %}
+    {{ block.super }}
+    <script src="{% static 'vendor/libs/datatables-bs5/datatables-bootstrap5.js' %}"></script>
+    <script src="{% static 'vendor/libs/moment/moment.js' %}"></script>
+    <script src="{% static 'vendor/libs/flatpickr/flatpickr.js' %}"></script>
+    <script src="{% static 'vendor/libs/@form-validation/popular.js' %}"></script>
+    <script src="{% static 'vendor/libs/@form-validation/bootstrap5.js' %}"></script>
+    <script src="{% static 'vendor/libs/@form-validation/auto-focus.js' %}"></script>
+    <!-- jQuery Confirm JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+{% endblock vendor_js %}
+
+{% block content %}
+    <!-- DataTable with Buttons -->
+    <div class="card">
+        <div class="card-datatable table-responsive pt-0">
+            <table class="datatables-basic table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>ID</th>
+                    <th>Uçak tipi</th>
+                    <th>Kim üretti</th>
+                    <th>Ne zaman üretti</th>
+                    <th>Kanat Bilgileri</th>
+                    <th>Gövde Bilgileri</th>
+                    <th>Kuyruk Bilgileri</th>
+                    <th>Aviyonik bilgileri</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <!--/ DataTable with Buttons -->
+
+{% endblock %}
+
+{% block page_js %}
+    {{ block.super }}
+    <script>
+       $(function () {
+    var dt_basic_table = $('.datatables-basic');
+
+    if (dt_basic_table.length) {
+        dt_basic = dt_basic_table.DataTable({
+            ajax: {
+                "url": "{% url 'get_data_list_aircraft' %}",
+                "type": "GET"
+            },
+            columns: [
+                {data: null, defaultContent: ""}, // Responsive Control Column
+                {data: 'id'}, // ID
+                {data: 'aircraft_type'}, // Uçak Tipi
+                {data: 'assembly_user'}, // Kim Üretti
+                {data: 'assembly_date'}, // Ne Zaman Üretti
+                {
+                    data: 'parts_used.kanat',
+                    render: function (data) {
+                        return data ? `Parça ID: ${data.part_id}<br>Kişi: ${data.producing_personal}<br>Tarih: ${data.produced_date}` : 'Yok';
+                    }
+                },
+                {
+                    data: 'parts_used.govde',
+                    render: function (data) {
+                        return data ? `Parça ID: ${data.part_id}<br>Kişi: ${data.producing_personal}<br>Tarih: ${data.produced_date}` : 'Yok';
+                    }
+                },
+                {
+                    data: 'parts_used.kuyruk',
+                    render: function (data) {
+                        return data ? `Parça ID: ${data.part_id}<br>Kişi: ${data.producing_personal}<br>Tarih: ${data.produced_date}` : 'Yok';
+                    }
+                },
+                {
+                    data: 'parts_used.aviyonik',
+                    render: function (data) {
+                        return data ? `Parça ID: ${data.part_id}<br>Kişi: ${data.producing_personal}<br>Tarih: ${data.produced_date}` : 'Yok';
+                    }
+                },
+            ],
+            columnDefs: [
+                {
+                    // Responsive Control
+                    className: 'control',
+                    orderable: false,
+                    searchable: false,
+                    responsivePriority: 2,
+                    targets: 0
+                }
+            ],
+            order: [[1, 'desc']],
+            dom: '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-6 pt-md-0"B>><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end mt-n6 mt-md-0"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+            displayLength: 7,
+            lengthMenu: [7, 10, 25, 50, 75, 100],
+            language: {
+                paginate: {
+                    next: '<i class="ti ti-chevron-right ti-sm"></i>',
+                    previous: '<i class="ti ti-chevron-left ti-sm"></i>'
+                }
+            },
+            buttons: [],
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.modal({
+                        header: function (row) {
+                            var data = row.data();
+                            return 'Details of ' + data['aircraft_type'];
+                        }
+                    }),
+                    type: 'column',
+                    renderer: function (api, rowIdx, columns) {
+                        var data = $.map(columns, function (col, i) {
+                            return col.title !== ''
+                                ? `<tr data-dt-row="${col.rowIndex}" data-dt-column="${col.columnIndex}">
+                                        <td>${col.title}:</td>
+                                        <td>${col.data}</td>
+                                   </tr>`
+                                : '';
+                        }).join('');
+                        return data ? $('<table class="table"/><tbody />').append(data) : false;
+                    }
+                }
+            },
+            initComplete: function () {
+                $('.card-header').after('<hr class="my-0">');
+            }
+        });
+        $('div.head-label').html('<h5 class="card-title mb-0">Uçak Listesi</h5>');
+    }
+});
+
+    </script>
+{% endblock page_js %}

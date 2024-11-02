@@ -43,7 +43,6 @@ class TemplateBootstrapLayoutVertical:
         user = get_current_user()
 
         if user:
-            print(f"user: {user}")
             team_name = user.personal.team.name
 
             # Filter menu based on team

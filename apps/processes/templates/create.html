@@ -39,6 +39,15 @@
                 <h4 class="mb-1">{{ title }} Takımı</h4>
                 <p class="mb-0">Lütfen bir uçak seçin ve {{ title|lower }} oluşturun</p>
             </div>
+            {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
         </div>
 
         <div class="row">

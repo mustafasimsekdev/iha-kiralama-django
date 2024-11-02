@@ -10,7 +10,6 @@ Refer to dashboards/urls.py file for more pages.
 
 
 class DashboardsView(TemplateView):
-    print("run DashboardsView")
     # Predefined function
     def get_context_data(self, **kwargs):
         # A function to init the global layout. It is defined in config/__init__.py file

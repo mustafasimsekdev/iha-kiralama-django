@@ -12,7 +12,7 @@ Here you can override the page view layout.
 Refer to dashboards/urls.py file for more pages.
 """
 from django.http import JsonResponse
-from .models import Part, PartProduction, Aircraft, PartOfAircraft
+from .models import Part, PartProduction, Aircraft, PartOfAircraft, PartStock, AircraftProduction
 
 from django.views.generic import TemplateView
 from config import TemplateLayout
@@ -83,7 +83,11 @@ class CreateView(ProcessesView):
             # Uçak tipi bilgisi ve oturum açan kullanıcıyı alıyoruz
             aircraft_id = request.POST.get('aircraft_type')
 
-            aircraft_type = Aircraft.objects.get(id=aircraft_id)  # Uçak tipi nesnesi
+            # Aircraft id'sine göre uçağı arıyoruz
+            try:
+                aircraft_type = Aircraft.objects.get(id=aircraft_id)
+            except Aircraft.DoesNotExist:
+                return JsonResponse({'message': 'Lütfen varolan uçaklardan bir tanesini seçin!'}, status=400)
 
             # Kullanıcının takımı ve üretim yapacağı parça kontrolü
             team_name = request.user.personal.team.name
@@ -95,7 +99,6 @@ class CreateView(ProcessesView):
                     user=request.user,
                     part=part,
                     aircraft_type=aircraft_type,
-                    quantity=5
                 )
                 return JsonResponse({'message': 'Parça başarıyla üretildi!'})
             else:
@@ -105,6 +108,88 @@ class CreateView(ProcessesView):
 
 
 class ListView(ProcessesView):
+    def get(self, request, team_name):
+        if check_team_url_name(request, team_name):
+            return redirect('index')
+
+        context = self.get_context_data()
+        context['title'] = request.user.personal.team.name  # 'title' anahtarına takım bilgisi ekleniyor
+        return self.render_to_response(context)
+        # return render(request, 'create.html', {'title': request.user.personal.team})
+
+
+class CreateAircraftView(ProcessesView):
+    def get(self, request, team_name):
+
+        if check_team_url_name(request, team_name):
+            return redirect('index')
+
+        # Ekstra veriyi context ile gönderiyoruz
+        context = self.get_context_data()
+        context['title'] = request.user.personal.team.name  # 'title' anahtarına takım bilgisi ekleniyor
+        context['aircraft'] = Aircraft.objects.all()  # 'title' anahtarına takım bilgisi ekleniyor
+        return self.render_to_response(context)
+        # return render(request, 'create.html', {'title': request.user.personal.team})
+
+    def post(self, request, team_name):
+        if request.method == "POST":
+
+            if check_team_url_name(request, team_name):
+                return redirect('index')
+
+            # Uçak tipi bilgisi ve oturum açan kullanıcıyı alıyoruz
+            aircraft_id = request.POST.get('aircraft_type')
+
+            # Aircraft id'sine göre uçağı arıyoruz
+            try:
+                aircraft = Aircraft.objects.get(id=aircraft_id)
+            except Aircraft.DoesNotExist:
+                return JsonResponse({'message': 'Lütfen varolan uçaklardan bir tanesini seçin!'}, status=400)
+
+            # Gerekli parçalar
+            required_parts = ["Kanat", "Gövde", "Kuyruk", "Aviyonik"]
+            missing_parts = []
+            used_part_productions = []
+
+            # Stok ve Parça Kontrolü
+            for part_name in required_parts:
+                part = Part.objects.get(name=part_name)
+                part_stock = PartStock.objects.filter(part=part, aircraft_type=aircraft_id).first()
+
+                if not part_stock or part_stock.quantity < 1:
+                    missing_parts.append(part_name)
+                else:
+                    # Uygun part production kaydını al ve kullanılmak üzere listeye ekle
+                    part_production = PartProduction.objects.filter(part=part, aircraft_type=aircraft_id,
+                                                                    is_assembled=False, recycled_date__isnull=True,
+                                                                    recycled_personal__isnull=True).first()
+                    if part_production:
+                        used_part_productions.append(part_production)
+
+            # Eksik parça varsa montajı durdur ve uyarı ver
+            if missing_parts:
+                missing_parts_str = ", ".join(missing_parts)
+                messages.error(request, f"Uçak üretimi için yeterli stok yok. Eksik parçalar: {missing_parts_str}")
+                return JsonResponse({
+                                        'message': f'Uçak üretimi için yeterli stok yok. Eksik parçalar: {missing_parts_str}. Lütfen önce bunlar üretilsin!'},
+                                    status=400)
+            if used_part_productions:
+                aircraft_p = AircraftProduction()
+                aircraft_p.complete_assembly(aircraft, request.user, used_part_productions)
+                return JsonResponse({
+                                        'message': f'Başarılı bir şekilde 1 adet {aircraft.name} uçağı oluşturuldu. Uçak id: {aircraft_p.id}'},
+                                    status=200)
+
+            else:
+                missing_parts_str = ", ".join(missing_parts)
+                used_parts_str = ", ".join(used_part_productions)
+                return JsonResponse({
+                                        'message': f'Bilinmedik bir hata! Eksik Parçalar {missing_parts_str}. Var olan parçalar: {used_parts_str}'},
+                                    status=400)
+        return JsonResponse({'message': 'Geçersiz istek.'}, status=400)
+
+
+class ListAircraftView(ProcessesView):
     def get(self, request, team_name):
         if check_team_url_name(request, team_name):
             return redirect('index')
@@ -136,8 +221,8 @@ def part_production_data(request):
                 aircraft_production = part_of_aircraft.aircraft_production
                 assembly_info = {
                     "aircraft_id": aircraft_production.aircraft.id,
-                    "assembly_user": aircraft_production.assembly_user.id,
-                    "assembly_date": aircraft_production.assembly_date.strftime('%d-%m-%Y H%:M%:S%'),
+                    "assembly_user": aircraft_production.assembly_user.username,
+                    "assembly_date": aircraft_production.assembly_date.strftime('%d-%m-%Y %H:%M:%S'),
                 }
 
         # Parça bilgilerini JSON formatına ekle
@@ -149,9 +234,42 @@ def part_production_data(request):
             "is_assembled": 'Evet' if part.is_assembled else 'Hayır',
             "assembly_info": assembly_info  # Montaj bilgileri (kullanıldıysa)
         })
-    print(len(data), data)
     return JsonResponse({"data": data})
 
+def get_data_list_aircraft(request):
+    aircraft_productions = AircraftProduction.objects.all()
+    data = []
+
+    for production in aircraft_productions:
+        # Her uçak üretimi için kullanılan parçaların detaylarını içeren liste
+        parts_used = {
+            "kanat": None,
+            "govde": None,
+            "kuyruk": None,
+            "aviyonik": None
+        }
+
+        # Uçağın tüm parçalarını `PartOfAircraft` modelinden alıyoruz
+        parts = PartOfAircraft.objects.filter(aircraft_production=production)
+        for part_of_aircraft in parts:
+            part_type = convert_tr_to_en(part_of_aircraft.part_production.part.name.lower())  # Parça türünü belirlemek için
+            if part_type in parts_used:
+                parts_used[part_type] = {
+                    "part_id": part_of_aircraft.part_production.id,
+                    "producing_personal": part_of_aircraft.part_production.producing_personal.username if part_of_aircraft.part_production.producing_personal else "Bilinmiyor",
+                    "produced_date": part_of_aircraft.part_production.produced_date.strftime('%d-%m-%Y %H:%M:%S') if part_of_aircraft.part_production.produced_date else "Bilinmiyor",
+                }
+
+        # Her uçak için ilgili bilgileri ekleyin
+        data.append({
+            "id": production.id,
+            "aircraft_type": production.aircraft.name,
+            "assembly_user": production.assembly_user.username if production.assembly_user else "Bilinmiyor",
+            "assembly_date": production.assembly_date.strftime('%d-%m-%Y %H:%M:%S'),
+            "parts_used": parts_used  # Kanat, Gövde, Kuyruk, Aviyonik bilgileri
+        })
+
+    return JsonResponse({"data": data})
 
 @csrf_exempt
 def delete_part_production(request):
@@ -176,9 +294,8 @@ def delete_part_production(request):
                 return JsonResponse({"status": "error", "message": "Bu parça bir uçakta montajlanmış ve silinemez."})
 
             # Tüm koşullar sağlanıyorsa, geri dönüşüm bilgilerini güncelle
-            part_production.recycled_date = timezone.now()
-            part_production.recycled_personal = user
-            part_production.save()
+            part_production.recycle_part(user)
+
             return JsonResponse({"status": "ok", "message": "Parça başarıyla silindi."})
 
         except PartProduction.DoesNotExist:
